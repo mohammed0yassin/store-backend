@@ -6,9 +6,10 @@ const pepper = process.env.BCRYPT_PASSWORD
 const saltRounds = process.env.SALT_ROUNDS
 
 export type User = {
-     id: number;
-     firstname: string;
-     lastname: string;
+     id?: number;
+     username: string;
+     firstname?: string;
+     lastname?: string;
      password_digest: string;
 }
 
@@ -48,7 +49,7 @@ export class UserList {
   async create(u: User): Promise<User> {
       try {
         // @ts-ignore
-        const sql = 'INSERT INTO users (firstname, lastname, password_digest) VALUES($1, $2, $3) RETURNING *'
+        const sql = 'INSERT INTO users (username, firstname, lastname, password_digest) VALUES($1, $2, $3, $4) RETURNING *'
 
         const hash = bcrypt.hashSync(
             u.password_digest + pepper, 
@@ -58,23 +59,23 @@ export class UserList {
         const conn = await Client.connect()
 
         const result = await conn
-            .query(sql, [u.firstname, u.lastname, hash])
+            .query(sql, [u.username, u.firstname, u.lastname, hash])
 
         const user = result.rows[0]
 
         conn.release()
-
+        console.log("Created user ", user)
         return user
       } catch (err) {
           throw new Error(`Could not add new user ${u.firstname} ${u.lastname}. Error: ${err}`)
       }
   }
 
-  async authenticate(firstname: string, lastname: string, password: string): Promise<User | null> {
+  async authenticate(username: string, password: string): Promise<User | null> {
     const conn = await Client.connect()
-    const sql = 'SELECT password_digest FROM users WHERE firstname=($1) AND lastname=($2)'
+    const sql = 'SELECT * FROM users WHERE username=($1)'
 
-    const result = await conn.query(sql, [firstname, lastname])
+    const result = await conn.query(sql, [username])
 
     // console.log(password+pepper)
 
@@ -82,7 +83,7 @@ export class UserList {
 
       const user = result.rows[0]
 
-      console.log(user)
+      console.log("Logged in user ", user)
 
       if (bcrypt.compareSync(password+pepper, user.password_digest)) {
         return user

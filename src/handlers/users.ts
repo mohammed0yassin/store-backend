@@ -12,7 +12,7 @@ const index = async (_req: Request, res: Response) => {
 }
 
 const show = async (req: Request, res: Response) => {
-    const user = await userList.show(req.params.id)
+    const user = await userList.show(req.params.userId)
     res.json(user)
 }
 
@@ -49,16 +49,20 @@ const authenticate = async (req: Request, res: Response) => {
   }
 
 const deleteEntry = async (req: Request, res: Response) => {
-    const deleted = await userList.delete(req.params.id)
+    const deleted = await userList.delete(req.params.userId)
     res.json(deleted)
 }
 
 const user_routes = (app: express.Application) => {
-    app.get('/users', verifyAuthToken, index)
-    app.get('/users/:id', verifyAuthToken, show)
-    app.post('/users', create)
+    
     app.post('/login', authenticate)
-    app.delete('/users', verifyAuthToken, deleteEntry)
+
+    const routes = express.Router();
+    routes.get('/', verifyAuthToken, index)
+    routes.get('/:userId', verifyAuthToken, show)
+    routes.post('/', create)
+    routes.delete('/', verifyAuthToken, deleteEntry)
+    return routes
 }
 
 export default user_routes

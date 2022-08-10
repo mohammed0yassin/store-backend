@@ -29,7 +29,7 @@ const create = async (req: Request, res: Response) => {
 }
 
 const deleteEntry = async (req: Request, res: Response) => {
-    const deleted = await productList.delete(req.params.id)
+    const deleted = await productList.delete(req.params.productId)
     res.json(deleted)
 }
 
@@ -37,7 +37,7 @@ const product_routes = (app: express.Application) => {
     app.get('/products', index)
     app.get('/products/:id', show)
     app.post('/products', create)
-    app.delete('/products', deleteEntry)
+    app.delete('/products/:productId', deleteEntry)
 }
 
 export default product_routes

@@ -40,6 +40,10 @@ const authenticate = async (req: Request, res: Response) => {
     }
     try {
         const u = await userList.authenticate(user.username, user.password_digest)
+        if (!u) {
+            res.status(403)
+            res.json("Wrong username or password")
+        }
         var token = jwt.sign({ user: u }, token_secret);
         res.json(token)
     } catch(err) {

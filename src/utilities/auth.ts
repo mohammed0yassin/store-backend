@@ -2,9 +2,6 @@ import { request, Request, Response } from 'express'
 import { User } from '../models/users'
 import jwt from 'jsonwebtoken'
 
-
-
-
 const token_secret = process.env.TOKEN_SECRET as string
 
 const verifyAuthToken  = (req: Request, res: Response, next: Function): void => {

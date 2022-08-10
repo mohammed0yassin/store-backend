@@ -27,6 +27,7 @@ const create = async (req: Request, res: Response) => {
         const newOrder = await orderList.create(order)
         res.json(newOrder)
     } catch(err) {
+        console.log(err)
         res.status(400)
         res.json(err)
     }
@@ -44,7 +45,7 @@ const order_routes = (app: express.Application) => {
     routes.get('/orders', verifyAuthToken, index)
     routes.get('/orders/:orderId', verifyAuthToken, show)
     routes.post('/orders', verifyAuthToken, create)
-    routes.delete('/orders', verifyAuthToken, deleteEntry)
+    routes.delete('/orders/:orderId', verifyAuthToken, deleteEntry)
     // app.use('/', routes)
     return routes
 }

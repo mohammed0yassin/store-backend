@@ -48,6 +48,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### User
 - id: SERIAL PRIMARY KEY
+- username: string (unique)
 - firstName: string
 - lastName: string
 - password_digest: string
@@ -56,9 +57,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 - id: SERIAL PRIMARY KEY
 - user_id: number[foreign key to users table]
 - status of order (active or complete): boolean [active: true] [complete: false]
+- product_ids: number[] (list of products ids to be used in Order-Products table)
 
 #### Order-Products
 - id: SERIAL PRIMARY KEY
-- quantity: integer
 - order_id: number[foreign key to orders table]
 - product_id: number[foreign key to products table]

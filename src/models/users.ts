@@ -48,23 +48,21 @@ export class UserList {
 
   async create(u: User): Promise<User> {
       try {
-        // @ts-ignore
         const sql = 'INSERT INTO users (username, firstname, lastname, password_digest) VALUES($1, $2, $3, $4) RETURNING *'
 
         const hash = bcrypt.hashSync(
             u.password_digest + pepper, 
             parseInt(saltRounds as string)
         );
-
+        // @ts-ignore
         const conn = await Client.connect()
-
+        
         const result = await conn
             .query(sql, [u.username, u.firstname, u.lastname, hash])
-
         const user = result.rows[0]
 
         conn.release()
-        console.log("Created user ", user)
+        // console.log("Created user ", user)
         return user
       } catch (err) {
           throw new Error(`Could not add new user ${u.firstname} ${u.lastname}. Error: ${err}`)
@@ -72,6 +70,7 @@ export class UserList {
   }
 
   async authenticate(username: string, password: string): Promise<User | null> {
+    // @ts-ignore
     const conn = await Client.connect()
     const sql = 'SELECT * FROM users WHERE username=($1)'
 
@@ -83,7 +82,7 @@ export class UserList {
 
       const user = result.rows[0]
 
-      console.log("Logged in user ", user)
+      // console.log("Logged in user ", user)
 
       if (bcrypt.compareSync(password+pepper, user.password_digest)) {
         return user

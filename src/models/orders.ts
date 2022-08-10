@@ -11,6 +11,12 @@ export type Order = {
     product_ids: number[];
 }
 
+export type OrderProducts = {
+    id?: number;
+    order_id: number;
+    product_id: string;
+}
+
 export class OrderList {
 
   async index(): Promise<Order[]> {
@@ -29,14 +35,14 @@ export class OrderList {
 
   async show(id: string): Promise<Order> {
     try {
-        // @ts-ignore
         const orderSQL = 'SELECT * FROM orders WHERE id=($1)'
+        // @ts-ignore
         const conn = await Client.connect()
         const result = await conn.query(orderSQL, [id])
         const productsSQL = 'SELECT * FROM order_products where order_id=($1)'
         const productsResult = await conn.query(productsSQL, [id])
         conn.release()
-        let product_ids = productsResult.rows.map((order) => {
+        let product_ids = productsResult.rows.map((order: OrderProducts) => {
           return parseInt(order.product_id)
         })
         const orderDetails = result.rows[0]
@@ -54,8 +60,8 @@ export class OrderList {
 
   async create(o: Order): Promise<Order> {
       try {
-        // @ts-ignore
         const orderSQL = 'INSERT INTO orders (user_id, status) VALUES($1, $2) RETURNING *'
+        // @ts-ignore
         const conn = await Client.connect()
         const orderResult = await conn
               .query(orderSQL, [o.user_id, o.status])
@@ -83,18 +89,20 @@ export class OrderList {
 
   async delete(id: string): Promise<Order> {
       try {
-        const sql = 'DELETE FROM orders WHERE id=($1)'
+        const orderSQL = 'DELETE FROM orders WHERE id=($1)'
+        const orderProductsSQL = 'DELETE FROM order_products WHERE order_id=($1)'
         // @ts-ignore
         const conn = await Client.connect()
+        const OrderProductsResult = await conn.query(orderProductsSQL, [id])
+        const orderResult = await conn.query(orderSQL, [id])
 
-        const result = await conn.query(sql, [id])
-
-        const order = result.rows[0]
+        const order = orderResult.rows[0]
 
         conn.release()
 
     return order
       } catch (err) {
+          console.error(err)
           throw new Error(`Could not delete order ${id}. Error: ${err}`)
       }
   }

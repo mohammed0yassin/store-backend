@@ -38,6 +38,19 @@ const deleteEntry = async (req: Request, res: Response) => {
     res.json(deleted)
 }
 
+// ... other methods
+const addProduct = async (_req: Request, res: Response) => {
+    const orderId: string = _req.params.orderId
+    const productId: string = _req.body.productId
+  
+    try {
+      const addedProduct = await orderList.addProduct(orderId, productId)
+      res.json(addedProduct)
+    } catch(err) {
+      res.status(400)
+      res.json(err)
+    }
+  } 
 
 const order_routes = (app: express.Application) => {
     const routes = express.Router({mergeParams: true});
@@ -46,6 +59,7 @@ const order_routes = (app: express.Application) => {
     routes.get('/orders/:orderId', verifyAuthToken, show)
     routes.post('/orders', verifyAuthToken, create)
     routes.delete('/orders/:orderId', verifyAuthToken, deleteEntry)
+    routes.post('/orders/:orderId/products', verifyAuthToken, addProduct)
     // app.use('/', routes)
     return routes
 }

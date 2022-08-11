@@ -1,6 +1,7 @@
 import { Order, OrderList } from '../orders';
 import { User, UserList } from '../users';
 import { Product, ProductList } from '../products';
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 const orderList = new OrderList()
 const userList = new UserList()
@@ -8,11 +9,7 @@ const productList = new ProductList()
 
 const active = true
 const completed = false
-const addProduct = async (id: string) => {
-  const result1 = await productList.show(id)
-  // if (result1.id) {
-  //   return null
-  // }
+const addProduct = async () => {
   const result2 = await productList.create({
     name: 'Test Perfume',
     price: 2500,
@@ -40,21 +37,14 @@ const createUser = async () => {
 }
 
 const deleteUser = async () => {
-  const result1 = await userList.show("1")
-  if (result1.username === 'testusernameorder') {
-    userList.delete("1");
-  }
-  const result2 = await userList.show("2")
-  if (result2.username === 'testusernameorder') {
-    userList.delete("2");
-  }
+  userList.delete("3");
 }
 
 describe("Order Model", () => {
   beforeAll(async () => {
-    addProduct("1");
-    addProduct("2");
-    createUser();
+    await addProduct();
+    await addProduct();
+    await createUser();
   });
 
   it('should have an index method', () => {
@@ -74,53 +64,52 @@ describe("Order Model", () => {
   });
 
   it('create method should add an order', async () => {
-    const result1 = await userList.show("1")
     const result = await orderList.create({
       //@ts-ignore
-      user_id: 1,
+      user_id: 3,
       status: active,
-      product_ids: [1, 2]
+      product_ids: [4, 5]
     });
 
     expect(result).toEqual({
-      id: 1,
+      id: 2,
       //@ts-ignore
-      user_id:"1",
+      user_id:"3",
       status: active,
-      product_ids: [1, 2],
+      product_ids: [4, 5],
     });
   });
 
   it('index method should return a list of orders', async () => {
     const result = await orderList.index();
     expect(result).toEqual([{
-      id: 1,
+      id: 2,
       //@ts-ignore
-      user_id: "1",
+      user_id: "3",
       status: active,
     }]);
   });
 
   it('show method should return the correct order', async () => {
-    const result = await orderList.show("1");
+    const result = await orderList.show("2");
     expect(result).toEqual({
-      id: 1,
+      id: 2,
       //@ts-ignore
-      user_id: "1",
+      user_id: "3",
       status: active,
-      product_ids: [1, 2],
+      product_ids: [4, 5],
     });
   });
 
   it('delete method should remove the order', async () => {
-    orderList.delete("1");
-    const result = await orderList.index()
+    await orderList.delete("2");
+    const result = await orderList.index();
     expect(result).toEqual([]);
   });
 
   afterAll(async () => {
-    removeProduct("1");
-    removeProduct("2");
-    deleteUser();
+    await removeProduct("4");
+    await removeProduct("5");
+    await deleteUser();
   });
 });

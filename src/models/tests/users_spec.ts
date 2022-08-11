@@ -42,8 +42,7 @@ describe("User Model", () => {
   });
 
   it('delete method should remove the user', async () => {
-    await userList.delete("1");
-    await userList.delete("2");
+    await userList.delete("4");
     const result = await userList.index()
 
     expect(result).toEqual([]);

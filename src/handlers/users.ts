@@ -7,13 +7,23 @@ const token_secret = process.env.TOKEN_SECRET as string
 const userList = new UserList()
 
 const index = async (_req: Request, res: Response) => {
-    const users = await userList.index()
-    res.json(users)
+    try {
+        const users = await userList.index()
+        res.json(users)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const show = async (req: Request, res: Response) => {
-    const user = await userList.show(req.params.userId)
-    res.json(user)
+    try {
+        const user = await userList.show(req.params.userId)
+        res.json(user)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const create = async (req: Request, res: Response) => {
@@ -53,8 +63,13 @@ const authenticate = async (req: Request, res: Response) => {
   }
 
 const deleteEntry = async (req: Request, res: Response) => {
-    const deleted = await userList.delete(req.params.userId)
-    res.json(deleted)
+    try {
+        const deleted = await userList.delete(req.params.userId)
+        res.json(deleted)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const user_routes = (app: express.Application) => {
@@ -62,10 +77,10 @@ const user_routes = (app: express.Application) => {
     app.post('/login', authenticate)
 
     const routes = express.Router();
-    routes.get('/', verifyAuthToken, index)
+    routes.get('/', index)
     routes.get('/:userId', verifyAuthToken, show)
     routes.post('/', create)
-    routes.delete('/', verifyAuthToken, deleteEntry)
+    routes.delete('/:userId', verifyAuthToken, deleteEntry)
     return routes
 }
 

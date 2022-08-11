@@ -7,13 +7,23 @@ const active = true
 const completed = false
 
 const index = async (_req: Request, res: Response) => {
-    const orders = await orderList.index()
-    res.json(orders)
+    try {
+        const orders = await orderList.index()
+        res.json(orders)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const show = async (req: Request, res: Response) => {
-    const order = await orderList.show(req.params.orderId)
-    res.json(order)
+    try {
+        const order = await orderList.show(req.params.orderId)
+        res.json(order)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const create = async (req: Request, res: Response) => {
@@ -34,8 +44,13 @@ const create = async (req: Request, res: Response) => {
 }
 
 const deleteEntry = async (req: Request, res: Response) => {
-    const deleted = await orderList.delete(req.params.orderId)
-    res.json(deleted)
+    try {
+        const deleted = await orderList.delete(req.params.orderId)
+        res.json(deleted)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 // ... other methods

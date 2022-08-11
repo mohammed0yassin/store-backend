@@ -4,13 +4,23 @@ import { Product, ProductList } from '../models/products'
 const productList = new ProductList()
 
 const index = async (_req: Request, res: Response) => {
-    const products = await productList.index()
-    res.json(products)
+    try {
+        const products = await productList.index()
+        res.json(products)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }        
 }
 
 const show = async (req: Request, res: Response) => {
-    const product = await productList.show(req.params.id)
-    res.json(product)
+    try {
+        const product = await productList.show(req.params.id)
+        res.json(product)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const create = async (req: Request, res: Response) => {
@@ -29,8 +39,13 @@ const create = async (req: Request, res: Response) => {
 }
 
 const deleteEntry = async (req: Request, res: Response) => {
-    const deleted = await productList.delete(req.params.productId)
-    res.json(deleted)
+    try {
+        const deleted = await productList.delete(req.params.productId)
+        res.json(deleted)
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
 }
 
 const product_routes = (app: express.Application) => {

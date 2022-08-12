@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import { Order, OrderList } from '../models/orders'
-import verifyAuthToken  from '../utilities/auth'
+import { verifyAuthToken, verifyUserAllowed }  from '../utilities/auth'
 
 const orderList = new OrderList()
 const active = true
@@ -70,11 +70,11 @@ const addProduct = async (_req: Request, res: Response) => {
 const order_routes = (app: express.Application) => {
     const routes = express.Router({mergeParams: true});
 
-    routes.get('/orders', verifyAuthToken, index)
-    routes.get('/orders/:orderId', verifyAuthToken, show)
-    routes.post('/orders', verifyAuthToken, create)
-    routes.delete('/orders/:orderId', verifyAuthToken, deleteEntry)
-    routes.post('/orders/:orderId/products', verifyAuthToken, addProduct)
+    routes.get('/orders', verifyAuthToken, verifyUserAllowed, index)
+    routes.get('/orders/:orderId', verifyAuthToken, verifyUserAllowed, show)
+    routes.post('/orders', verifyAuthToken, verifyUserAllowed, create)
+    routes.delete('/orders/:orderId', verifyAuthToken, verifyUserAllowed, deleteEntry)
+    routes.post('/orders/:orderId/products', verifyAuthToken, verifyUserAllowed, addProduct)
     // app.use('/', routes)
     return routes
 }

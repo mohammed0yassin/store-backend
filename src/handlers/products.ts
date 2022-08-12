@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import { Product, ProductList } from '../models/products'
+import { verifyAuthToken }  from '../utilities/auth'
 
 const productList = new ProductList()
 
@@ -51,8 +52,8 @@ const deleteEntry = async (req: Request, res: Response) => {
 const product_routes = (app: express.Application) => {
     app.get('/products', index)
     app.get('/products/:id', show)
-    app.post('/products', create)
-    app.delete('/products/:productId', deleteEntry)
+    app.post('/products', verifyAuthToken, create)
+    app.delete('/products/:productId', verifyAuthToken, deleteEntry)
 }
 
 export default product_routes

@@ -63,3 +63,6 @@ These are the notes from a meeting with the frontend developer that describe wha
 - id: SERIAL PRIMARY KEY
 - order_id: number[foreign key to orders table]
 - product_id: number[foreign key to products table]
+
+#### Sample databsse schema
+![Alt text](./users_schema.png?raw=true "Users")

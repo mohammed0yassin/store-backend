@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { User, UserList } from '../models/users'
 import jwt from 'jsonwebtoken'
-import verifyAuthToken  from '../utilities/auth'
+import { verifyAuthToken, verifyUserAllowed }  from '../utilities/auth'
 
 const token_secret = process.env.TOKEN_SECRET as string
 const userList = new UserList()
@@ -77,10 +77,10 @@ const user_routes = (app: express.Application) => {
     app.post('/login', authenticate)
 
     const routes = express.Router();
-    routes.get('/', index)
-    routes.get('/:userId', verifyAuthToken, show)
+    routes.get('/', verifyAuthToken, index)
+    routes.get('/:userId', verifyAuthToken, verifyUserAllowed, show)
     routes.post('/', create)
-    routes.delete('/:userId', verifyAuthToken, deleteEntry)
+    routes.delete('/:userId', verifyAuthToken, verifyUserAllowed, deleteEntry)
     return routes
 }
 

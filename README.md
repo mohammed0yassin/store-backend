@@ -22,6 +22,20 @@
     }
 }
 
+#### Create database on your server/local environment
+1. Run the following commands in psql to create database user
+
+        CREATE USER store_user WITH PASSWORD 'somepassword';
+
+2. Create the databases for dev and test environments
+        CREATE DATABASE store_backend;
+        CREATE DATABASE store_backend_test;
+
+3. Grant all database privileges to user in both databases
+
+        GRANT ALL PRIVILEGES ON DATABASE store_backend TO store_user;
+        GRANT ALL PRIVILEGES ON DATABASE store_backend_test TO store_user;
+
 #### create .env file and fill these variables:
     POSTGRES_HOST=127.0.0.1
     POSTGRES_DB=database_name

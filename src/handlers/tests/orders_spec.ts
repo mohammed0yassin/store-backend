@@ -23,18 +23,21 @@ const test_user: User = {
     username: 'testuser',
     firstname: 'testuser',
     lastname: 'user',
-    password_digest: "testpassword"
+    //@ts-ignore
+    password: 'testpassword'
 }
 
 const addProduct = async () => {
     const response = await request.post(
         '/products'
+    ).set('Authorization', 'Bearer ' + token
     ).send(test_product);
 }
 
 const removeProduct = async (id: string) => {
     const response = await request.delete(
         `/products/${id}`
+      ).set('Authorization', 'Bearer ' + token
       );
 }
 
@@ -45,19 +48,12 @@ const createUser = async () => {
     token = response.body
 }
 
-const deleteUser = async (id: string) => {
-    const response = await request.delete(
-        `/users/${id}`
-      ).set('Authorization', 'Bearer ' + token);
-}
-
-
 describe('Test Orders endpoint responses', () => {
 
     beforeAll(async () => {
-        await addProduct();
-        await addProduct();
         await createUser();
+        await addProduct();
+        await addProduct();
       });
 
   it('creates an order', async () => {
@@ -88,9 +84,9 @@ describe('Test Orders endpoint responses', () => {
     ).set('Authorization', 'Bearer ' + token);
     expect(response.status).toBe(200);
   });
+  
   afterAll(async () => {
     await removeProduct("1");
     await removeProduct("2");
-    await deleteUser("1");
   });
 });

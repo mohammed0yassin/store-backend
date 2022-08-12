@@ -9,7 +9,8 @@ const test_user: User = {
   username: 'testuser',
   firstname: 'testuser',
   lastname: 'user',
-  password_digest: "testpassword"
+  //@ts-ignore
+  password: "testpassword"
 }
 
 describe('Test Users endpoint responses', () => {
@@ -25,7 +26,7 @@ describe('Test Users endpoint responses', () => {
   it('gets all users', async () => {
     const response = await request.get(
       '/users'
-    );
+    ).set('Authorization', 'Bearer ' + token);
     expect(response.status).toBe(200);
   });
 
